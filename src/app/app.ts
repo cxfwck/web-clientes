@@ -1,12 +1,29 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { CommonModule, CurrencyPipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Component, inject, signal } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [
+    CommonModule,
+      CurrencyPipe
+],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('web-clientes');
+
+private http = inject(HttpClient);
+
+planos = signal<any[]>([]);
+
+
+ngOnInit(){
+  this.http.get('http://localhost:8081/api/v1/planos')
+  .subscribe((consulta) =>{
+    this.planos.set(consulta as any[]);
+
+  })
+}
+
 }
